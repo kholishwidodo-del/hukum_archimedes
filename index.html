@@ -187,20 +187,35 @@
                         <h3 class="font-bold text-lg text-cyan-400 flex items-center gap-2">
                             <i class="fa-solid fa-flask-vial"></i> Simulator Virtual Lab Archimedes & Gelas Berpancur
                         </h3>
-                        <p class="text-xs text-slate-300">Geser slider untuk mengubah variabel. Amati pegas, bejana berpancur, pancuran air, dan gelas penampung secara real-time.</p>
+                        <p class="text-xs text-slate-300">Atur massa, volume, bahan, atau kedalaman pencelupan untuk mengamati perubahan neraca pegas & air pindahan secara akurat.</p>
                     </div>
                     <span class="bg-cyan-950 text-cyan-300 border border-cyan-700 text-xs px-3 py-1 rounded-full font-semibold">
-                        Interaktif Real-Time
+                        Interaktif Real-Time V2.0
                     </span>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
                     <!-- Controls Column (Left) -->
-                    <div class="lg:col-span-5 space-y-4 bg-slate-800/90 p-4 rounded-xl border border-slate-700">
+                    <div class="lg:col-span-5 space-y-3.5 bg-slate-800/90 p-4 rounded-xl border border-slate-700">
+                        <!-- Preset Material Selector -->
+                        <div class="relative z-30">
+                            <label for="simPresetSelect" class="block text-xs font-semibold text-amber-300 mb-1">
+                                <i class="fa-solid fa-cubes"></i> Pilih Preset Bahan Benda:
+                            </label>
+                            <select id="simPresetSelect" onchange="applyMaterialPreset()" class="w-full p-2 bg-slate-900 border border-slate-600 rounded-lg text-xs text-amber-200 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer shadow-sm">
+                                <option value="custom">Kustom (Gunakan Slider Bebas)</option>
+                                <option value="iron">Besi (ρ = 7800 kg/m³ - Tenggelam)</option>
+                                <option value="aluminum">Aluminium (ρ = 2700 kg/m³ - Tenggelam)</option>
+                                <option value="stone">Batu/Kaca (ρ = 2500 kg/m³ - Tenggelam)</option>
+                                <option value="ice">Es Batu (ρ = 920 kg/m³ - Terapung)</option>
+                                <option value="wood">Kayu Pinus (ρ = 600 kg/m³ - Terapung)</option>
+                            </select>
+                        </div>
+
                         <!-- Choice of Fluid -->
                         <div class="relative z-30">
                             <label for="simFluidSelect" class="block text-xs font-semibold text-slate-300 mb-1">Pilih Jenis Zat Cair (Fluida):</label>
-                            <select id="simFluidSelect" class="w-full p-2.5 bg-slate-900 border border-slate-600 rounded-lg text-sm text-cyan-300 font-semibold focus:outline-none focus:ring-2 focus:ring-cyan-400 cursor-pointer shadow-sm">
+                            <select id="simFluidSelect" class="w-full p-2 bg-slate-900 border border-slate-600 rounded-lg text-xs text-cyan-300 font-semibold focus:outline-none focus:ring-2 focus:ring-cyan-400 cursor-pointer shadow-sm">
                                 <option value="1000" data-color="rgba(14, 165, 233, 0.85)" class="bg-slate-900 text-cyan-300 py-1">Air Murni (1000 kg/m³)</option>
                                 <option value="800" data-color="rgba(245, 158, 11, 0.85)" class="bg-slate-900 text-amber-300 py-1">Minyak Goreng (800 kg/m³)</option>
                                 <option value="1030" data-color="rgba(20, 184, 166, 0.85)" class="bg-slate-900 text-teal-300 py-1">Air Laut Garam (1030 kg/m³)</option>
@@ -212,13 +227,13 @@
                         <div>
                             <div class="flex justify-between text-xs font-semibold text-slate-300 mb-1">
                                 <span>Massa Benda (m<sub>b</sub>):</span>
-                                <span id="simMassVal" class="text-emerald-400 font-bold">2.00 kg</span>
+                                <span id="simMassVal" class="text-emerald-400 font-bold">2.50 kg</span>
                             </div>
-                            <input type="range" id="simMass" min="0.5" max="5.0" step="0.1" value="2.0" class="w-full accent-emerald-400 cursor-pointer">
+                            <input type="range" id="simMass" min="0.2" max="6.0" step="0.1" value="2.5" class="w-full accent-emerald-400 cursor-pointer">
                             <div class="flex justify-between text-[10px] text-slate-400 mt-0.5">
-                                <span>0.5 kg</span>
-                                <span>2.5 kg</span>
-                                <span>5.0 kg</span>
+                                <span>0.2 kg</span>
+                                <span>3.0 kg</span>
+                                <span>6.0 kg</span>
                             </div>
                         </div>
 
@@ -226,20 +241,34 @@
                         <div>
                             <div class="flex justify-between text-xs font-semibold text-slate-300 mb-1">
                                 <span>Volume Benda (V<sub>b</sub>):</span>
-                                <span id="simVolVal" class="text-cyan-300 font-bold">0.0020 m³ (2.0 L)</span>
+                                <span id="simVolVal" class="text-cyan-300 font-bold">0.0005 m³ (0.5 L)</span>
                             </div>
-                            <input type="range" id="simVol" min="0.0005" max="0.004" step="0.0001" value="0.002" class="w-full accent-cyan-400 cursor-pointer">
+                            <input type="range" id="simVol" min="0.0001" max="0.0020" step="0.0001" value="0.0005" class="w-full accent-cyan-400 cursor-pointer">
                             <div class="flex justify-between text-[10px] text-slate-400 mt-0.5">
-                                <span>0.5 Liter</span>
+                                <span>0.1 Liter</span>
+                                <span>1.0 Liter</span>
                                 <span>2.0 Liter</span>
-                                <span>4.0 Liter</span>
+                            </div>
+                        </div>
+
+                        <!-- Slider Kedalaman Celup (Immersion Control) -->
+                        <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-700 space-y-1">
+                            <div class="flex justify-between text-xs font-semibold text-slate-200">
+                                <span class="flex items-center gap-1"><i class="fa-solid fa-arrows-up-down text-cyan-400"></i> Kedalaman Celup:</span>
+                                <span id="simDepthVal" class="text-cyan-400 font-bold">100% (Tercelup Total)</span>
+                            </div>
+                            <input type="range" id="simDepth" min="0" max="100" step="5" value="100" class="w-full accent-cyan-400 cursor-pointer">
+                            <div class="flex justify-between text-[9px] text-slate-400">
+                                <span>0% (Udara)</span>
+                                <span>50%</span>
+                                <span>100% (Total)</span>
                             </div>
                         </div>
 
                         <!-- Info Massa Jenis Benda Hitungan -->
                         <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-700 flex justify-between items-center text-xs">
                             <span class="text-slate-400 font-medium">Massa Jenis Benda (&rho;<sub>b</sub>):</span>
-                            <span id="simDensityBenda" class="font-bold text-amber-300">1000 kg/m³</span>
+                            <span id="simDensityBenda" class="font-bold text-amber-300">5000 kg/m³</span>
                         </div>
                     </div>
 
@@ -269,8 +298,8 @@
                                         <!-- Ruler Ticks -->
                                         <div class="absolute left-1 top-0 bottom-0 flex flex-col justify-between text-[7px] font-mono text-slate-400 py-0.5">
                                             <span>0N</span>
-                                            <span>25N</span>
-                                            <span>50N</span>
+                                            <span>30N</span>
+                                            <span>60N</span>
                                         </div>
                                         <!-- Dynamic SVG Coil Spring -->
                                         <svg class="w-10 h-full z-10" viewBox="0 0 40 100" preserveAspectRatio="none">
@@ -285,9 +314,9 @@
                                     <div class="w-3.5 h-3.5 border-b-2 border-r-2 border-amber-400 rounded-br transform rotate-45 -mt-1"></div>
                                 </div>
 
-                                <!-- Dynamic SVG Connecting Wire (Straight Vertical at X=130px) -->
+                                <!-- Dynamic SVG Connecting Wire (Renders straight when taut, dashed/curved when slack) -->
                                 <svg class="absolute inset-0 w-full h-full pointer-events-none z-20">
-                                    <line id="springWire" x1="130" y1="134" x2="130" y2="210" stroke="#f8fafc" stroke-width="2" stroke-dasharray="3,2" />
+                                    <path id="springWire" d="M 130 134 L 130 210" stroke="#f8fafc" stroke-width="2" stroke-dasharray="0" fill="none" class="transition-all duration-300" />
                                 </svg>
 
                                 <!-- 2. Main Eureka Can Beaker (Left: 30px, Width: 200px -> Ends at X = 230px) -->
@@ -295,29 +324,27 @@
                                     <div class="absolute top-0 left-0 right-0 h-1 bg-slate-300/80 rounded-t"></div>
                                     <span class="absolute top-2 left-2 text-[9px] font-mono text-slate-300 font-bold bg-slate-900/80 px-1.5 py-0.5 rounded border border-slate-700">Gelas Berpancur</span>
 
-                                    <!-- Liquid inside Main Beaker (Rich blue gradient with top surface line) -->
+                                    <!-- Liquid inside Main Beaker -->
                                     <div id="fluidLevel" class="w-full fluid-element absolute bottom-0 left-0 border-t-2 border-cyan-200 water-surface-glow" style="height: 80%; background: linear-gradient(180deg, rgba(56, 189, 248, 0.85) 0%, rgba(2, 132, 199, 0.9) 100%);">
                                         <div class="w-full h-1 bg-white/60"></div>
                                     </div>
 
-                                    <!-- OVERFLOW SPOUT TUBE (Pancuran Nempel di Dinding Kanan Bejana Utama) -->
-                                    <!-- Extends from X = 226px to 262px, angled down at 12deg -->
+                                    <!-- OVERFLOW SPOUT TUBE -->
                                     <div class="absolute right-[-34px] top-[46px] w-[36px] h-[16px] bg-slate-300 border-t-2 border-b-2 border-r-2 border-slate-400 rounded-r transform rotate-[12deg] z-20 overflow-visible shadow-md">
-                                        <!-- Inside channel of spout tube -->
                                         <div class="w-full h-full bg-cyan-500/80"></div>
                                     </div>
 
-                                    <!-- Floating / Submerged Block Object (Centered at X = 130px) -->
+                                    <!-- Floating / Submerged Block Object -->
                                     <div id="submergedBlock" class="absolute left-1/2 -translate-x-1/2 w-[68px] h-[68px] bg-gradient-to-br from-amber-600 via-amber-700 to-amber-900 border-2 border-amber-300 rounded-lg shadow-2xl flex flex-col items-center justify-center text-[10px] font-bold text-white z-20 transition-all duration-300" style="bottom: 25%;">
-                                        <!-- Ring Hook Top (Centered at X = 130px) -->
+                                        <!-- Ring Hook Top -->
                                         <div id="blockTopHook" class="absolute -top-3.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 border-2 border-amber-300 rounded-full"></div>
                                         
                                         <span>BENDA</span>
-                                        <span id="blockVolText" class="text-[9px] text-amber-200 font-mono">2.0 L</span>
+                                        <span id="blockVolText" class="text-[9px] text-amber-200 font-mono">0.5 L</span>
 
                                         <!-- Buoyant Force Vector Arrow (Fa - Cyan) -->
                                         <div id="vectorFa" class="vector-arrow absolute -top-8 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-100 z-30">
-                                            <span class="text-[8px] font-extrabold text-cyan-300 bg-slate-900/90 px-1 rounded border border-cyan-500 whitespace-nowrap">F<sub>a</sub> = 19.6N</span>
+                                            <span class="text-[8px] font-extrabold text-cyan-300 bg-slate-900/90 px-1 rounded border border-cyan-500 whitespace-nowrap">F<sub>a</sub> = 4.9N</span>
                                             <div class="w-1 bg-cyan-400 h-6"></div>
                                             <div class="w-2.5 h-2.5 border-t-2 border-l-2 border-cyan-300 transform rotate-45 -mt-3"></div>
                                         </div>
@@ -326,45 +353,48 @@
                                         <div id="vectorW" class="vector-arrow absolute -bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-100 z-30">
                                             <div class="w-2.5 h-2.5 border-b-2 border-r-2 border-rose-400 transform rotate-45 -mb-1.5"></div>
                                             <div class="w-1 bg-rose-500 h-6"></div>
-                                            <span class="text-[8px] font-extrabold text-rose-300 bg-slate-900/90 px-1 rounded border border-rose-500 whitespace-nowrap">W = 19.6N</span>
+                                            <span class="text-[8px] font-extrabold text-rose-300 bg-slate-900/90 px-1 rounded border border-rose-500 whitespace-nowrap">W = 24.5N</span>
                                         </div>
                                     </div>
 
                                 </div>
 
-                                <!-- 3. Water Stream Streaming directly from Spout Tip down to Catch Beaker -->
-                                <!-- Starts at Spout Outlet Tip (X = 260px, Y = 212px) -->
+                                <!-- 3. Water Stream Streaming directly from Spout Tip -->
                                 <div id="spoutWaterStream" class="flowing-stream absolute left-[258px] top-[212px] w-[10px] h-[126px] bg-cyan-400 rounded-b transition-all duration-300 opacity-0 pointer-events-none z-30 shadow-md"></div>
 
-                                <!-- 4. Overflow Catch Beaker (Located strictly BESIDE Main Beaker at Left = 250px, Width = 120px) -->
-                                <!-- Gap of 20px between Main Beaker (ends 230px) and Catch Beaker (starts 250px) -> ZERO OVERLAP! -->
+                                <!-- 4. Overflow Catch Beaker -->
                                 <div class="absolute bottom-8 left-[250px] w-[120px] h-[140px] border-x-3 border-b-3 border-slate-300/90 rounded-b-xl bg-slate-950/80 overflow-visible flex flex-col justify-end shadow-xl z-10">
                                     <div class="absolute top-0 left-0 right-0 h-1 bg-slate-300/90 rounded-t"></div>
                                     <span class="absolute -top-5 left-0 right-0 text-center text-[8px] font-mono text-cyan-300 font-semibold bg-slate-900/90 border border-slate-700 rounded py-0.5 whitespace-nowrap">Gelas Penampung Air Pindahan</span>
 
-                                    <!-- Volume Scale Ticks on Beaker Glass Wall -->
+                                    <!-- Volume Scale Ticks -->
                                     <div class="absolute left-1 top-2 bottom-2 flex flex-col justify-between text-[7px] font-mono text-slate-400 z-20 pointer-events-none select-none">
-                                        <span>4.0L -</span>
-                                        <span>3.0L -</span>
                                         <span>2.0L -</span>
+                                        <span>1.5L -</span>
                                         <span>1.0L -</span>
+                                        <span>0.5L -</span>
                                     </div>
 
-                                    <!-- Liquid Level in Catch Beaker (Vivid Blue with Wave surface) -->
+                                    <!-- Liquid Level in Catch Beaker -->
                                     <div id="catchFluidLevel" class="w-full fluid-element absolute bottom-0 left-0 border-t-2 border-cyan-200 water-surface-glow z-10" style="height: 40%; background: linear-gradient(180deg, rgba(56, 189, 248, 0.9) 0%, rgba(2, 132, 199, 0.95) 100%);">
                                         <div class="w-full h-0.5 bg-white/70"></div>
                                     </div>
 
-                                    <!-- Text Readout Badge Placed Cleanly Below the Beaker (No Water Obstruction) -->
+                                    <!-- Text Readout Badge -->
                                     <div class="absolute -bottom-9 left-0 right-0 text-center p-1 bg-slate-900/95 border border-slate-700 rounded shadow-lg z-30">
                                         <span class="block text-[8px] text-slate-300 font-bold leading-tight">V<sub>pindah</sub> = V<sub>celup</sub></span>
-                                        <span id="catchVolReadout" class="text-[10px] font-bold text-cyan-300 font-mono">2.0 L</span>
+                                        <span id="catchVolReadout" class="text-[10px] font-bold text-cyan-300 font-mono">0.5 L</span>
                                     </div>
                                 </div>
 
                                 <!-- Status Badge Floating/Submerged -->
-                                <div id="simStatusBadge" class="absolute top-2 right-2 bg-teal-600 text-white text-[10px] px-2.5 py-1 rounded-full font-bold shadow-lg z-30">
-                                    MELAYANG
+                                <div id="simStatusBadge" class="absolute top-2 right-2 bg-rose-600 text-white text-[10px] px-2.5 py-1 rounded-full font-bold shadow-lg z-30">
+                                    TENGGELAM
+                                </div>
+
+                                <!-- Slack wire alert note -->
+                                <div id="simSlackNote" class="absolute bottom-2 left-2 right-2 bg-amber-950/90 border border-amber-600 text-amber-200 text-[9px] p-1.5 rounded text-center hidden z-30 font-semibold">
+                                    <i class="fa-solid fa-circle-info"></i> Tali Kendur: Gaya Apung F<sub>a</sub> menahan seluruh berat benda. Neraca Pegas membaca 0.0 N.
                                 </div>
 
                             </div>
@@ -375,15 +405,15 @@
                         <div class="mt-3 bg-slate-900 border border-cyan-500/40 p-3 rounded-xl w-full max-w-lg grid grid-cols-3 gap-2 text-center">
                             <div class="bg-slate-950 p-2 rounded border border-slate-800">
                                 <span class="block text-[9px] text-slate-400 uppercase font-semibold">Berat Udara (W)</span>
-                                <span id="simDisplayW" class="text-xs sm:text-sm font-bold text-emerald-400">19.60 N</span>
+                                <span id="simDisplayW" class="text-xs sm:text-sm font-bold text-emerald-400">24.50 N</span>
                             </div>
                             <div class="bg-slate-950 p-2 rounded border border-slate-800">
                                 <span class="block text-[9px] text-slate-400 uppercase font-semibold">Gaya Apung (F<sub>a</sub>)</span>
-                                <span id="simDisplayFa" class="text-xs sm:text-sm font-bold text-cyan-300">19.60 N</span>
+                                <span id="simDisplayFa" class="text-xs sm:text-sm font-bold text-cyan-300">4.90 N</span>
                             </div>
                             <div class="bg-slate-950 p-2 rounded border border-slate-800">
                                 <span class="block text-[9px] text-slate-400 uppercase font-semibold">Berat Semu (W<sub>semu</sub>)</span>
-                                <span id="simDisplayWsemu" class="text-xs sm:text-sm font-bold text-amber-300">0.00 N</span>
+                                <span id="simDisplayWsemu" class="text-xs sm:text-sm font-bold text-amber-300">19.60 N</span>
                             </div>
                         </div>
                     </div>
@@ -624,6 +654,41 @@
         ];
 
         /**
+         * Apply Material Presets
+         */
+        function applyMaterialPreset() {
+            const presetSelect = document.getElementById('simPresetSelect');
+            const massInput = document.getElementById('simMass');
+            const volInput = document.getElementById('simVol');
+            if (!presetSelect || !massInput || !volInput) return;
+
+            const val = presetSelect.value;
+            if (val === 'iron') {
+                // Density ~ 7800 kg/m3 (m = 3.9 kg, V = 0.0005 m3)
+                volInput.value = "0.0005";
+                massInput.value = "3.9";
+            } else if (val === 'aluminum') {
+                // Density ~ 2700 kg/m3 (m = 1.35 kg, V = 0.0005 m3)
+                volInput.value = "0.0005";
+                massInput.value = "1.35";
+            } else if (val === 'stone') {
+                // Density ~ 2500 kg/m3 (m = 1.25 kg, V = 0.0005 m3)
+                volInput.value = "0.0005";
+                massInput.value = "1.25";
+            } else if (val === 'ice') {
+                // Density ~ 920 kg/m3 (m = 0.46 kg, V = 0.0005 m3)
+                volInput.value = "0.0005";
+                massInput.value = "0.46";
+            } else if (val === 'wood') {
+                // Density ~ 600 kg/m3 (m = 0.30 kg, V = 0.0005 m3)
+                volInput.value = "0.0005";
+                massInput.value = "0.30";
+            }
+            updateArchimedesSim();
+        }
+
+        /**
+         * STREAMING_CHUNK:Refactoring simulation calculation loop and dynamic spring wire rendering...
          * Real-time Archimedes Virtual Lab Simulator Logic
          */
         function updateArchimedesSim() {
@@ -634,8 +699,9 @@
             const selectedOption = rhoFSelect.options[rhoFSelect.selectedIndex];
             const fluidColor = selectedOption ? selectedOption.getAttribute('data-color') : 'rgba(14, 165, 233, 0.85)';
 
-            const mBenda = parseFloat(document.getElementById('simMass').value) || 2.0;
-            const vBenda = parseFloat(document.getElementById('simVol').value) || 0.002;
+            const mBenda = parseFloat(document.getElementById('simMass').value) || 2.5;
+            const vBenda = parseFloat(document.getElementById('simVol').value) || 0.0005;
+            const depthPct = parseFloat(document.getElementById('simDepth').value) || 100;
             const g = 9.8;
 
             // Density of object
@@ -644,40 +710,44 @@
             // Gravity weight of object in air
             const W_udara = mBenda * g;
 
-            // Calculate submerged fraction
-            let submergedFraction = 1.0;
+            // Natural floating submerged fraction at equilibrium
+            let equilibriumSubmerged = 1.0;
             let statusText = 'MELAYANG';
             let statusBg = 'bg-teal-600';
 
-            if (rhoBenda < rhoF) {
-                // Terapung: submerged fraction equals rhoBenda / rhoF
-                submergedFraction = rhoBenda / rhoF;
+            if (rhoBenda < rhoF - 0.5) {
+                equilibriumSubmerged = rhoBenda / rhoF;
                 statusText = 'TERAPUNG';
                 statusBg = 'bg-amber-500';
-            } else if (Math.abs(rhoBenda - rhoF) < 1) {
-                // Melayang
-                submergedFraction = 1.0;
+            } else if (Math.abs(rhoBenda - rhoF) <= 0.5) {
+                equilibriumSubmerged = 1.0;
                 statusText = 'MELAYANG';
                 statusBg = 'bg-teal-600';
             } else {
-                // Tenggelam
-                submergedFraction = 1.0;
+                equilibriumSubmerged = 1.0;
                 statusText = 'TENGGELAM';
                 statusBg = 'bg-rose-600';
             }
 
-            // Submerged volume V_celup
-            const vCelup = vBenda * submergedFraction;
+            // Immersion ratio set by user (0.0 to 1.0)
+            const immersionRatio = depthPct / 100.0;
 
-            // Buoyant Force Fa
+            // Actual submerged volume
+            const vCelup = vBenda * immersionRatio;
+
+            // Buoyant force based on current submerged volume
             const Fa = rhoF * g * vCelup;
 
-            // Apparent weight W_semu
+            // Apparent weight measured on scale
             const W_semu = Math.max(0, W_udara - Fa);
+
+            // Is the string slack? (When buoyant force equals or exceeds gravity weight)
+            const isSlack = (Fa >= W_udara && W_udara > 0 && immersionRatio > equilibriumSubmerged);
 
             // Update UI Labels
             document.getElementById('simMassVal').innerText = mBenda.toFixed(2) + ' kg';
             document.getElementById('simVolVal').innerText = vBenda.toFixed(4) + ' m³ (' + (vBenda * 1000).toFixed(1) + ' L)';
+            document.getElementById('simDepthVal').innerText = depthPct + '% (' + (depthPct === 100 ? 'Tercelup Total' : depthPct === 0 ? 'Di Udara' : 'Sebagian') + ')';
             document.getElementById('simDensityBenda').innerText = Math.round(rhoBenda) + ' kg/m³';
 
             document.getElementById('simDisplayW').innerText = W_udara.toFixed(2) + ' N';
@@ -689,7 +759,7 @@
             const fluidLevelElem = document.getElementById('fluidLevel');
             if (fluidLevelElem) {
                 fluidLevelElem.style.background = `linear-gradient(180deg, ${fluidColor} 0%, rgba(2, 132, 199, 0.95) 100%)`;
-                fluidLevelElem.style.height = '80%'; // Base height reaches spout lower orifice
+                fluidLevelElem.style.height = '80%';
             }
 
             const catchFluidLevelElem = document.getElementById('catchFluidLevel');
@@ -698,46 +768,47 @@
             }
 
             // Displaced Water Volume in Catch Beaker
-            const catchVolLitres = (vCelup * 1000).toFixed(1);
+            const catchVolLitres = (vCelup * 1000).toFixed(2);
             document.getElementById('catchVolReadout').innerText = catchVolLitres + ' L';
             
-            // Catch fluid height scales with displaced volume (0.5L to 4.0L mapped to 15% - 85%)
-            const catchHeightPct = Math.min(85, Math.max(12, (vCelup / 0.004) * 70 + 12));
+            // Catch fluid height scales with displaced volume (mapped up to 2.0L max)
+            const catchHeightPct = Math.min(88, Math.max(8, (vCelup / 0.002) * 75 + 8));
             if (catchFluidLevelElem) {
                 catchFluidLevelElem.style.height = catchHeightPct + '%';
             }
 
-            // Spout Water Stream animation toggle (visible whenever object is submerged)
+            // Spout Water Stream animation toggle
             const spoutStream = document.getElementById('spoutWaterStream');
             if (spoutStream) {
-                if (vCelup > 0) {
-                    spoutStream.style.opacity = '1';
-                } else {
-                    spoutStream.style.opacity = '0';
-                }
+                spoutStream.style.opacity = vCelup > 0 ? '1' : '0';
             }
 
-            // Visual Block Position inside beaker
+            // Visual Block Position inside beaker based on immersion depth & floating status
             const blockElem = document.getElementById('submergedBlock');
             const statusBadge = document.getElementById('simStatusBadge');
-            document.getElementById('blockVolText').innerText = (vBenda * 1000).toFixed(1) + ' L';
+            const slackNote = document.getElementById('simSlackNote');
+            document.getElementById('blockVolText').innerText = (vBenda * 1000).toFixed(2) + ' L';
 
             if (statusBadge) {
                 statusBadge.innerText = statusText;
                 statusBadge.className = `absolute top-2 right-2 text-white text-[10px] px-2.5 py-1 rounded-full font-bold shadow-lg z-30 ${statusBg}`;
             }
 
-            let blockBottomPx = 70; // Position from beaker bottom in px
-            if (statusText === 'TERAPUNG') {
-                // Partially submerged: block sits near water surface line
-                blockBottomPx = 110 + (1 - submergedFraction) * 45;
-            } else if (statusText === 'MELAYANG') {
-                // Completely submerged in middle water level
-                blockBottomPx = 65;
-            } else {
-                // Tenggelam: rests near beaker bottom
-                blockBottomPx = 18;
+            if (slackNote) {
+                if (isSlack) {
+                    slackNote.classList.remove('hidden');
+                } else {
+                    slackNote.classList.add('hidden');
+                }
             }
+
+            // Block vertical placement calculation (0% immersion = top in air, 100% = submerged)
+            // Base level Y: 0% depth -> bottomPx = 145 (air), 100% depth -> bottomPx = 25 (underwater)
+            let blockBottomPx = 145 - (immersionRatio * 120);
+            if (statusText === 'TENGGELAM' && immersionRatio === 1) {
+                blockBottomPx = 18; // rests at beaker bottom
+            }
+
             if (blockElem) {
                 blockElem.style.bottom = blockBottomPx + 'px';
             }
@@ -748,46 +819,51 @@
             if (vectorFa) vectorFa.querySelector('span').innerHTML = 'F<sub>a</sub> = ' + Fa.toFixed(1) + 'N';
             if (vectorW) vectorW.querySelector('span').innerHTML = 'W = ' + W_udara.toFixed(1) + 'N';
 
-            // Dynamic Needle Position on Spring Scale (W_semu max 50N mapping)
-            const needleTopPct = Math.min(90, Math.max(10, (W_semu / 50) * 80 + 10));
+            // Dynamic Needle Position on Spring Scale (W_semu max 60N mapping)
+            const needleTopPct = Math.min(90, Math.max(10, (W_semu / 60) * 80 + 10));
             const springNeedle = document.getElementById('springNeedle');
             if (springNeedle) springNeedle.style.top = needleTopPct + '%';
 
             // Dynamic SVG Coil Spring Path stretching according to W_semu
             const springCoilPath = document.getElementById('springCoilPath');
             if (springCoilPath) {
-                const stretchY = 30 + (W_semu / 50) * 50;
+                const stretchY = 25 + (W_semu / 60) * 55;
                 const newPath = `M 20,0 L 20,5 L 10,${10 + stretchY*0.1} L 30,${10 + stretchY*0.25} L 10,${10 + stretchY*0.4} L 30,${10 + stretchY*0.55} L 10,${10 + stretchY*0.7} L 30,${10 + stretchY*0.85} L 20,${10 + stretchY} L 20,95`;
                 springCoilPath.setAttribute('d', newPath);
             }
 
-            // Update SVG Wire Position precisely along centered X=130px vertical axis
-            updateConnectingWire(blockBottomPx);
+            // Update SVG Wire Position & Slack appearance
+            updateConnectingWire(blockBottomPx, isSlack);
         }
 
         /**
-         * Update SVG Wire coordinates precisely on X=130px axis
+         * Update SVG Wire coordinates and rendering mode (taut vs slack)
          */
-        function updateConnectingWire(blockBottomPx) {
+        function updateConnectingWire(blockBottomPx, isSlack) {
             const wire = document.getElementById('springWire');
             if (!wire) return;
 
-            // Scale bottom hook Y = 134px
-            const y1 = 134;
+            const y1 = 134; // Scale hook Y
+            const y2 = Math.max(y1 + 5, 394 - blockBottomPx - 78); // Top hook of block Y
 
-            // Main beaker height = 230px, bottom Y inside stage = 410 - 16 = 394px
-            // Block top hook Y = 394 - blockBottomPx - 68 (block height) - 10 (hook height)
-            const y2 = Math.max(y1 + 5, 394 - blockBottomPx - 78);
-
-            // X coordinates locked strictly at 130px center vertical axis
-            wire.setAttribute('x1', 130);
-            wire.setAttribute('y1', y1);
-            wire.setAttribute('x2', 130);
-            wire.setAttribute('y2', y2);
+            if (isSlack) {
+                // Render curved/dashed slack string when buoyant force supports object
+                const midX = 145; // slight wave bend to right
+                const midY = (y1 + y2) / 2;
+                wire.setAttribute('d', `M 130 ${y1} Q ${midX} ${midY} 130 ${y2}`);
+                wire.setAttribute('stroke-dasharray', '4,3');
+                wire.setAttribute('stroke', '#fbbf24'); // amber color for slack
+            } else {
+                // Taut vertical line under tension
+                wire.setAttribute('d', `M 130 ${y1} L 130 ${y2}`);
+                wire.setAttribute('stroke-dasharray', '0');
+                wire.setAttribute('stroke', '#f8fafc'); // crisp white for taut
+            }
         }
 
         /**
-         * Render Activity 1 Table (Volume Tercelup vs Fa)
+         * STREAMING_CHUNK:Setting up initialization listeners and default date inputs...
+         * Render Activity 1 Table
          */
         function renderKegiatan1Table() {
             const tbody = document.getElementById('table-kegiatan-1');
@@ -818,235 +894,29 @@
             });
         }
 
-        function checkKegiatan1Row(id, vCelup, rhoF) {
-            const userVal = parseFloat(document.getElementById(`k1_input_${id}`).value);
-            const statusElem = document.getElementById(`k1_status_${id}`);
-            const expectedFa = rhoF * 9.8 * vCelup;
-
-            if (isNaN(userVal)) {
-                statusElem.innerText = '❓ Isikan angka!';
-                statusElem.className = 'text-amber-600 text-xs font-bold ml-1';
-                return;
-            }
-
-            if (Math.abs(userVal - expectedFa) < 0.2) {
-                statusElem.innerText = '✅ Benar!';
-                statusElem.className = 'text-emerald-600 text-xs font-bold ml-1';
-            } else {
-                statusElem.innerText = `❌ Harusnya ${expectedFa.toFixed(1)} N`;
-                statusElem.className = 'text-rose-600 text-xs font-bold ml-1';
-            }
-        }
-
-        function addRowKegiatan1() {
-            const nextId = kegiatan1Data.length + 1;
-            const newVol = parseFloat((0.001 * nextId).toFixed(3));
-            const rhoF = 1000;
-            const mf = newVol * rhoF;
-            const wf = mf * 9.8;
-
-            kegiatan1Data.push({
-                id: nextId,
-                vCelup: newVol,
-                rhoF: rhoF,
-                mf: parseFloat(mf.toFixed(1)),
-                wf: parseFloat(wf.toFixed(1))
-            });
-
-            renderKegiatan1Table();
-        }
-
-        /**
-         * Render Activity 2 Table (Floating, Suspended, Sinking predictions)
-         */
-        function renderKegiatan2Table() {
-            const tbody = document.getElementById('table-kegiatan-2');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            kegiatan2Data.forEach((row, index) => {
-                const rhoBenda = Math.round(row.m / row.v);
-                const tr = document.createElement('tr');
-                tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
-
-                tr.innerHTML = `
-                    <td class="p-3 text-center font-bold text-slate-500 border-r border-slate-200">${index + 1}</td>
-                    <td class="p-3 border-r border-slate-200">${row.m} kg</td>
-                    <td class="p-3 border-r border-slate-200">${row.v} m³</td>
-                    <td class="p-3 border-r border-slate-200 font-bold text-amber-700">${rhoBenda} kg/m³</td>
-                    <td class="p-3 border-r border-slate-200 font-bold text-cyan-700">${row.rhoF} kg/m³</td>
-                    <td class="p-3 border-r border-slate-200">
-                        <select id="k2_select_${row.id}" class="p-1 border border-slate-300 rounded text-xs font-semibold focus:outline-none">
-                            <option value="">-- Pilih --</option>
-                            <option value="terapung">Terapung</option>
-                            <option value="melayang">Melayang</option>
-                            <option value="tenggelam">Tenggelam</option>
-                        </select>
-                    </td>
-                    <td class="p-3 text-center">
-                        <button onclick="checkKegiatan2Row(${row.id}, '${row.correctState}')" class="no-print bg-cyan-100 hover:bg-cyan-200 text-cyan-800 text-xs px-2.5 py-1 rounded font-semibold transition-all cursor-pointer">
-                            Validasi
-                        </button>
-                        <span id="k2_status_${row.id}" class="text-xs font-bold ml-1"></span>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function checkKegiatan2Row(id, correctState) {
-            const userChoice = document.getElementById(`k2_select_${id}`).value;
-            const statusElem = document.getElementById(`k2_status_${id}`);
-
-            if (!userChoice) {
-                statusElem.innerText = '❓ Pilih dulu!';
-                statusElem.className = 'text-amber-600 text-xs font-bold ml-1';
-                return;
-            }
-
-            if (userChoice === correctState) {
-                statusElem.innerText = '✅ Sesuai!';
-                statusElem.className = 'text-emerald-600 text-xs font-bold ml-1';
-            } else {
-                statusElem.innerText = `❌ Harusnya ${correctState.toUpperCase()}`;
-                statusElem.className = 'text-rose-600 text-xs font-bold ml-1';
-            }
-        }
-
-        /**
-         * Initialize Chart.js graph
-         */
-        function initArchimedesChart() {
-            const canvasElem = document.getElementById('archimedesChart');
-            if (!canvasElem) return;
-
-            const ctx = canvasElem.getContext('2d');
-
-            const labels = kegiatan1Data.map(d => `${(d.vCelup * 1000).toFixed(1)} L (${d.vCelup} m³)`);
-            const dataFa = kegiatan1Data.map(d => d.rhoF * 9.8 * d.vCelup);
-
-            archimedesChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Gaya Apung Fa (N) vs Volume Tercelup V',
-                        data: dataFa,
-                        borderColor: '#0d9488',
-                        backgroundColor: 'rgba(13, 148, 136, 0.15)',
-                        borderWidth: 3,
-                        pointBackgroundColor: '#0284c7',
-                        pointRadius: 6,
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Volume Benda Tercelup (V_celup)',
-                                font: { weight: 'bold' }
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Gaya Apung F_a (Newton)',
-                                font: { weight: 'bold' }
-                            },
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-        function updateArchimedesChart() {
-            if (!archimedesChartInstance) return;
-
-            const labels = kegiatan1Data.map(d => `${(d.vCelup * 1000).toFixed(1)} L (${d.vCelup} m³)`);
-            const dataFa = kegiatan1Data.map(d => d.rhoF * 9.8 * d.vCelup);
-
-            archimedesChartInstance.data.labels = labels;
-            archimedesChartInstance.data.datasets[0].data = dataFa;
-            archimedesChartInstance.update();
-        }
-
-        /**
-         * Case Study Answer Check
-         */
-        function checkAnswerArchimedes() {
-            const userAns = parseFloat(document.getElementById('calcAnswerArchimedes').value);
-            const resultDiv = document.getElementById('calcResultArchimedes');
-            resultDiv.classList.remove('hidden');
-
-            const expected = 338.1;
-
-            if (isNaN(userAns)) {
-                resultDiv.innerText = '⚠ Silakan masukkan hasil perhitungan kelompok Anda.';
-                resultDiv.className = 'text-xs font-semibold mt-1 text-amber-700';
-            } else if (Math.abs(userAns - expected) < 0.5) {
-                resultDiv.innerText = '🎉 Luar biasa! Jawaban Anda BENAR (W_semu = 338,1 N). Kubus besi mengalami gaya apung 49 N!';
-                resultDiv.className = 'text-xs font-bold mt-1 text-emerald-700';
-            } else {
-                resultDiv.innerText = `❌ Jawaban belum tepat. Hint: Hitung W_udara = m × g (387,1 N), Fa = 49 N, lalu selisihkan.`;
-                resultDiv.className = 'text-xs font-bold mt-1 text-rose-700';
-            }
-        }
-
-        /**
-         * Export to PDF Function
-         */
-        function downloadPDF() {
-            const element = document.getElementById('lkpd-document');
-            
-            element.classList.add('pdf-export-mode');
-
-            const opt = {
-                margin:       [0.3, 0.3, 0.3, 0.3],
-                filename:     'LKPD_Interaktif_Hukum_Archimedes.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.classList.remove('pdf-export-mode');
-            });
-        }
-
         // On Page Load Initialization
         window.onload = function() {
             const fluidSelect = document.getElementById('simFluidSelect');
             const massInput = document.getElementById('simMass');
             const volInput = document.getElementById('simVol');
+            const depthInput = document.getElementById('simDepth');
 
-            if (fluidSelect) {
-                fluidSelect.addEventListener('change', updateArchimedesSim);
-            }
-            if (massInput) {
-                massInput.addEventListener('input', updateArchimedesSim);
-            }
-            if (volInput) {
-                volInput.addEventListener('input', updateArchimedesSim);
-            }
+            if (fluidSelect) fluidSelect.addEventListener('change', updateArchimedesSim);
+            if (massInput) massInput.addEventListener('input', () => {
+                document.getElementById('simPresetSelect').value = 'custom';
+                updateArchimedesSim();
+            });
+            if (volInput) volInput.addEventListener('input', () => {
+                document.getElementById('simPresetSelect').value = 'custom';
+                updateArchimedesSim();
+            });
+            if (depthInput) depthInput.addEventListener('input', updateArchimedesSim);
 
             updateArchimedesSim();
             renderKegiatan1Table();
             renderKegiatan2Table();
             initArchimedesChart();
             
-            // Set default date input to current date
             const today = new Date().toISOString().split('T')[0];
             const dateElem = document.getElementById('tanggal');
             if (dateElem) dateElem.value = today;
