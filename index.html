@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Interaktif - Hukum Archimedes</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- html2pdf for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+        /* Styles for printing and PDF export */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+            }
+            .print-card {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                page-break-inside: avoid;
+            }
+            input, textarea, select {
+                border: none !important;
+                background: transparent !important;
+                resize: none !important;
+            }
+        }
+
+        .pdf-export-mode input, .pdf-export-mode textarea {
+            border-bottom: 1px dashed #94a3b8 !important;
+            background-color: #f8fafc !important;
+        }
+
+        /* Dynamic fluid animations and transitions */
+        .fluid-element {
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+        }
+
+        .spring-coiled-path {
+            transition: d 0.3s ease-out;
+        }
+
+        .vector-arrow {
+            transition: all 0.3s ease;
+        }
+
+        @keyframes waterFlow {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 24px; }
+        }
+
+        .flowing-stream {
+            background-image: linear-gradient(180deg, 
+                rgba(255,255,255,0.8) 0%, 
+                rgba(14, 165, 233, 0.9) 25%, 
+                rgba(56, 189, 248, 0.7) 50%, 
+                rgba(14, 165, 233, 0.9) 75%, 
+                rgba(255,255,255,0.8) 100%);
+            background-size: 100% 24px;
+            animation: waterFlow 0.4s linear infinite;
+        }
+
+        /* Wave surface glow */
+        .water-surface-glow {
+            box-shadow: 0 -2px 8px rgba(56, 189, 248, 0.8);
+        }
+    </style>
+</head>
+<body class="py-6 px-3 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+
+    <!-- Container Utama Document -->
+    <div id="lkpd-document" class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+        
+        <!-- Header LKPD -->
+        <header class="bg-gradient-to-r from-blue-700 via-teal-700 to-cyan-700 text-white p-6 sm:p-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-center md:text-left">
+                    <span class="bg-cyan-900/80 text-cyan-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider"> IPA MTsN 1 Kota Malang </span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold mt-2 tracking-tight">LEMBAR KERJA PESERTA DIDIK (LKPD) INTERAKTIF</h1>
+                    <p class="text-cyan-100 mt-1 font-medium text-sm sm:text-base">Materi: Hukum Archimedes & Gaya Apung (Fluida Statis)</p>
+                </div>
+                <div class="no-print flex flex-col sm:flex-row gap-2">
+                    <button onclick="downloadPDF()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-4 py-2.5 rounded-lg transition-all shadow-md flex items-center justify-center gap-2 text-sm cursor-pointer">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF
+                    </button>
+                    <button onclick="window.print()" class="bg-white/20 hover:bg-white/30 text-white font-semibold px-4 py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 text-sm backdrop-blur-sm cursor-pointer">
+                        <i class="fa-solid fa-print"></i> Cetak
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-6 sm:p-8 space-y-8">
+
+            <!-- SECTION 1: Identitas Kelompok -->
+            <section class="bg-slate-50 p-5 rounded-xl border border-slate-200 print-card">
+                <div class="flex items-center gap-2 mb-4 text-teal-800 font-bold text-lg border-b border-slate-200 pb-2">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <h2>IDENTITAS KELOMPOK</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Nama Kelompok / Kelas:</label>
+                        <input type="text" id="namaKelompok" placeholder="Contoh: Kelompok 3 - XI MIPA 1" class="w-full p-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Tanggal Pelaksanaan:</label>
+                        <input type="date" id="tanggal" class="w-full p-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex items-center gap-3">
+                        <span class="w-7 h-7 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-xs">1</span>
+                        <input type="text" id="anggota1" placeholder="Siswa 1 (Ketua Kelompok)" class="w-full p-1 text-sm bg-transparent border-none outline-none font-medium">
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex items-center gap-3">
+                        <span class="w-7 h-7 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-xs">2</span>
+                        <input type="text" id="anggota2" placeholder="Siswa 2 (Anggota)" class="w-full p-1 text-sm bg-transparent border-none outline-none">
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex items-center gap-3">
+                        <span class="w-7 h-7 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-xs">3</span>
+                        <input type="text" id="anggota3" placeholder="Siswa 3 (Anggota)" class="w-full p-1 text-sm bg-transparent border-none outline-none">
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex items-center gap-3">
+                        <span class="w-7 h-7 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-xs">4</span>
+                        <input type="text" id="anggota4" placeholder="Siswa 4 (Anggota)" class="w-full p-1 text-sm bg-transparent border-none outline-none">
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: Tujuan & Ringkasan Teori -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Tujuan Pembelajaran -->
+                <div class="bg-teal-50/70 p-5 rounded-xl border border-teal-100 print-card">
+                    <h3 class="font-bold text-teal-900 text-base mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye text-teal-600"></i> Tujuan Pembelajaran
+                    </h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1.5 leading-relaxed">
+                        <li>Menganalisis besarnya gaya apung (F<sub>a</sub>) yang bekerja pada benda di dalam fluida.</li>
+                        <li>Membuktikan hubungan antara gaya apung dengan berat zat cair yang dipindahkan.</li>
+                        <li>Membandingkan massa jenis benda (&rho;<sub>b</sub>) dan massa jenis fluida (&rho;<sub>f</sub>) terhadap keadaan benda (terapung, melayang, tenggelam).</li>
+                        <li>Menghitung berat semu benda (W<sub>semu</sub>) ketika tercelup dalam zat cair.</li>
+                    </ul>
+                </div>
+
+                <!-- Ringkasan Teori Archimedes -->
+                <div class="bg-cyan-50/70 p-5 rounded-xl border border-cyan-100 print-card">
+                    <h3 class="font-bold text-cyan-900 text-base mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-water text-cyan-600"></i> Bunyi Hukum Archimedes & Persamaan
+                    </h3>
+                    <p class="text-sm text-slate-700 leading-relaxed mb-2">
+                        <em>"Setiap benda yang tercelup sebagian atau seluruhnya ke dalam zat cair akan mengalami gaya ke atas (gaya apung) yang besarnya sama dengan berat zat cair yang dipindahkan."</em>
+                    </p>
+                    <div class="bg-white p-3 rounded-lg border border-cyan-200 text-center shadow-inner my-2 space-y-1">
+                        <div class="font-bold text-cyan-950 text-base">F<sub>a</sub> = &rho;<sub>f</sub> &middot; g &middot; V<sub>celup</sub></div>
+                        <div class="text-xs text-slate-600 font-semibold">W<sub>semu</sub> = W<sub>udara</sub> - F<sub>a</sub></div>
+                    </div>
+                    <p class="text-xs text-slate-600">
+                        Keterangan: F<sub>a</sub> = Gaya Apung (N), &rho;<sub>f</sub> = Massa Jenis Fluida (kg/m³), g = Gravitasi (9.8 m/s²), V<sub>celup</sub> = Volume Tercelup (m³).
+                    </p>
+                </div>
+            </section>
+
+            <!-- SECTION 3: Simulator Virtual Hukum Archimedes -->
+            <section class="bg-slate-900 text-white p-5 sm:p-6 rounded-2xl shadow-lg border border-slate-700 no-print space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-700 pb-3">
+                    <div>
+                        <h3 class="font-bold text-lg text-cyan-400 flex items-center gap-2">
+                            <i class="fa-solid fa-flask-vial"></i> Simulator Virtual Lab Archimedes & Gelas Berpancur
+                        </h3>
+                        <p class="text-xs text-slate-300">Geser slider untuk mengubah variabel. Amati pegas, bejana berpancur, pancuran air, dan gelas penampung secara real-time.</p>
+                    </div>
+                    <span class="bg-cyan-950 text-cyan-300 border border-cyan-700 text-xs px-3 py-1 rounded-full font-semibold">
+                        Interaktif Real-Time
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <!-- Controls Column (Left) -->
+                    <div class="lg:col-span-5 space-y-4 bg-slate-800/90 p-4 rounded-xl border border-slate-700">
+                        <!-- Choice of Fluid -->
+                        <div class="relative z-30">
+                            <label for="simFluidSelect" class="block text-xs font-semibold text-slate-300 mb-1">Pilih Jenis Zat Cair (Fluida):</label>
+                            <select id="simFluidSelect" class="w-full p-2.5 bg-slate-900 border border-slate-600 rounded-lg text-sm text-cyan-300 font-semibold focus:outline-none focus:ring-2 focus:ring-cyan-400 cursor-pointer shadow-sm">
+                                <option value="1000" data-color="rgba(14, 165, 233, 0.85)" class="bg-slate-900 text-cyan-300 py-1">Air Murni (1000 kg/m³)</option>
+                                <option value="800" data-color="rgba(245, 158, 11, 0.85)" class="bg-slate-900 text-amber-300 py-1">Minyak Goreng (800 kg/m³)</option>
+                                <option value="1030" data-color="rgba(20, 184, 166, 0.85)" class="bg-slate-900 text-teal-300 py-1">Air Laut Garam (1030 kg/m³)</option>
+                                <option value="1400" data-color="rgba(217, 119, 6, 0.9)" class="bg-slate-900 text-amber-400 py-1">Sirup Kental (1400 kg/m³)</option>
+                            </select>
+                        </div>
+
+                        <!-- Massa Benda m_b -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                                <span>Massa Benda (m<sub>b</sub>):</span>
+                                <span id="simMassVal" class="text-emerald-400 font-bold">2.00 kg</span>
+                            </div>
+                            <input type="range" id="simMass" min="0.5" max="5.0" step="0.1" value="2.0" class="w-full accent-emerald-400 cursor-pointer">
+                            <div class="flex justify-between text-[10px] text-slate-400 mt-0.5">
+                                <span>0.5 kg</span>
+                                <span>2.5 kg</span>
+                                <span>5.0 kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Volume Total Benda V_b -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                                <span>Volume Benda (V<sub>b</sub>):</span>
+                                <span id="simVolVal" class="text-cyan-300 font-bold">0.0020 m³ (2.0 L)</span>
+                            </div>
+                            <input type="range" id="simVol" min="0.0005" max="0.004" step="0.0001" value="0.002" class="w-full accent-cyan-400 cursor-pointer">
+                            <div class="flex justify-between text-[10px] text-slate-400 mt-0.5">
+                                <span>0.5 Liter</span>
+                                <span>2.0 Liter</span>
+                                <span>4.0 Liter</span>
+                            </div>
+                        </div>
+
+                        <!-- Info Massa Jenis Benda Hitungan -->
+                        <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-700 flex justify-between items-center text-xs">
+                            <span class="text-slate-400 font-medium">Massa Jenis Benda (&rho;<sub>b</sub>):</span>
+                            <span id="simDensityBenda" class="font-bold text-amber-300">1000 kg/m³</span>
+                        </div>
+                    </div>
+
+                    <!-- Visual Beaker, Eureka Spout & Spring Scale (Right) -->
+                    <div class="lg:col-span-7 bg-slate-950 p-3 sm:p-4 rounded-xl border border-slate-800 flex flex-col items-center relative overflow-hidden">
+                        <div class="w-full text-center text-xs text-slate-400 mb-1 font-mono">
+                            SIMULASI VIRTUAL GELAS BERPANCUR & NERACA PEGAS
+                        </div>
+
+                        <!-- Lab Visualization Canvas Frame -->
+                        <div id="simLabFrame" class="relative w-full max-w-lg h-[430px] bg-slate-900 border-2 border-slate-700 rounded-xl p-2 flex justify-center items-center overflow-x-auto overflow-y-hidden">
+                            
+                            <!-- Fixed 480px Coordinate Stage for Precise Alignment -->
+                            <div id="simLabStage" class="relative w-[480px] h-[410px] shrink-0">
+
+                                <!-- 1. Spring Scale Assembly (Centered strictly over Main Beaker at X = 130px) -->
+                                <div class="absolute top-2 left-[80px] w-[100px] flex flex-col items-center z-30">
+                                    <!-- Scale Casing -->
+                                    <div class="w-full bg-gradient-to-b from-slate-700 to-slate-800 border border-slate-500 rounded-t-md p-1 shadow-md text-center">
+                                        <span class="block text-[8px] font-bold text-amber-300 tracking-wider uppercase font-mono">Neraca Pegas</span>
+                                        <div class="bg-slate-950 border border-slate-700 rounded p-0.5 mt-0.5">
+                                            <span id="scaleWeightRead" class="text-[11px] font-extrabold text-amber-400 font-mono">W = 19.6 N</span>
+                                        </div>
+                                    </div>
+                                    <!-- Clear Window with Ruler ticks and Coil Spring SVG -->
+                                    <div class="relative w-[88px] h-[76px] bg-slate-950/90 border-x border-b border-slate-600 rounded-b-md overflow-hidden flex justify-center">
+                                        <!-- Ruler Ticks -->
+                                        <div class="absolute left-1 top-0 bottom-0 flex flex-col justify-between text-[7px] font-mono text-slate-400 py-0.5">
+                                            <span>0N</span>
+                                            <span>25N</span>
+                                            <span>50N</span>
+                                        </div>
+                                        <!-- Dynamic SVG Coil Spring -->
+                                        <svg class="w-10 h-full z-10" viewBox="0 0 40 100" preserveAspectRatio="none">
+                                            <path id="springCoilPath" class="spring-coiled-path" d="M 20,0 L 20,10 L 10,18 L 30,26 L 10,34 L 30,42 L 10,50 L 30,58 L 10,66 L 30,74 L 20,82 L 20,95" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linejoin="round" />
+                                        </svg>
+                                        <!-- Needle Indicator -->
+                                        <div id="springNeedle" class="absolute left-0 right-0 h-0.5 bg-rose-500 z-20 transition-all duration-300" style="top: 20%;">
+                                            <div class="w-2 h-2 bg-rose-500 transform rotate-45 -mt-0.5 ml-1"></div>
+                                        </div>
+                                    </div>
+                                    <!-- Scale Bottom Hook (Located precisely at X=130, Y=134) -->
+                                    <div class="w-3.5 h-3.5 border-b-2 border-r-2 border-amber-400 rounded-br transform rotate-45 -mt-1"></div>
+                                </div>
+
+                                <!-- Dynamic SVG Connecting Wire (Straight Vertical at X=130px) -->
+                                <svg class="absolute inset-0 w-full h-full pointer-events-none z-20">
+                                    <line id="springWire" x1="130" y1="134" x2="130" y2="210" stroke="#f8fafc" stroke-width="2" stroke-dasharray="3,2" />
+                                </svg>
+
+                                <!-- 2. Main Eureka Can Beaker (Left: 30px, Width: 200px -> Ends at X = 230px) -->
+                                <div class="absolute bottom-4 left-[30px] w-[200px] h-[230px] border-x-4 border-b-4 border-slate-300/90 rounded-b-2xl bg-slate-950/80 overflow-visible flex flex-col justify-end shadow-2xl z-10">
+                                    <div class="absolute top-0 left-0 right-0 h-1 bg-slate-300/80 rounded-t"></div>
+                                    <span class="absolute top-2 left-2 text-[9px] font-mono text-slate-300 font-bold bg-slate-900/80 px-1.5 py-0.5 rounded border border-slate-700">Gelas Berpancur</span>
+
+                                    <!-- Liquid inside Main Beaker (Rich blue gradient with top surface line) -->
+                                    <div id="fluidLevel" class="w-full fluid-element absolute bottom-0 left-0 border-t-2 border-cyan-200 water-surface-glow" style="height: 80%; background: linear-gradient(180deg, rgba(56, 189, 248, 0.85) 0%, rgba(2, 132, 199, 0.9) 100%);">
+                                        <div class="w-full h-1 bg-white/60"></div>
+                                    </div>
+
+                                    <!-- OVERFLOW SPOUT TUBE (Pancuran Nempel di Dinding Kanan Bejana Utama) -->
+                                    <!-- Extends from X = 226px to 262px, angled down at 12deg -->
+                                    <div class="absolute right-[-34px] top-[46px] w-[36px] h-[16px] bg-slate-300 border-t-2 border-b-2 border-r-2 border-slate-400 rounded-r transform rotate-[12deg] z-20 overflow-visible shadow-md">
+                                        <!-- Inside channel of spout tube -->
+                                        <div class="w-full h-full bg-cyan-500/80"></div>
+                                    </div>
+
+                                    <!-- Floating / Submerged Block Object (Centered at X = 130px) -->
+                                    <div id="submergedBlock" class="absolute left-1/2 -translate-x-1/2 w-[68px] h-[68px] bg-gradient-to-br from-amber-600 via-amber-700 to-amber-900 border-2 border-amber-300 rounded-lg shadow-2xl flex flex-col items-center justify-center text-[10px] font-bold text-white z-20 transition-all duration-300" style="bottom: 25%;">
+                                        <!-- Ring Hook Top (Centered at X = 130px) -->
+                                        <div id="blockTopHook" class="absolute -top-3.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 border-2 border-amber-300 rounded-full"></div>
+                                        
+                                        <span>BENDA</span>
+                                        <span id="blockVolText" class="text-[9px] text-amber-200 font-mono">2.0 L</span>
+
+                                        <!-- Buoyant Force Vector Arrow (Fa - Cyan) -->
+                                        <div id="vectorFa" class="vector-arrow absolute -top-8 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-100 z-30">
+                                            <span class="text-[8px] font-extrabold text-cyan-300 bg-slate-900/90 px-1 rounded border border-cyan-500 whitespace-nowrap">F<sub>a</sub> = 19.6N</span>
+                                            <div class="w-1 bg-cyan-400 h-6"></div>
+                                            <div class="w-2.5 h-2.5 border-t-2 border-l-2 border-cyan-300 transform rotate-45 -mt-3"></div>
+                                        </div>
+
+                                        <!-- Gravity Weight Vector Arrow (W - Red) -->
+                                        <div id="vectorW" class="vector-arrow absolute -bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-100 z-30">
+                                            <div class="w-2.5 h-2.5 border-b-2 border-r-2 border-rose-400 transform rotate-45 -mb-1.5"></div>
+                                            <div class="w-1 bg-rose-500 h-6"></div>
+                                            <span class="text-[8px] font-extrabold text-rose-300 bg-slate-900/90 px-1 rounded border border-rose-500 whitespace-nowrap">W = 19.6N</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- 3. Water Stream Streaming directly from Spout Tip down to Catch Beaker -->
+                                <!-- Starts at Spout Outlet Tip (X = 260px, Y = 212px) -->
+                                <div id="spoutWaterStream" class="flowing-stream absolute left-[258px] top-[212px] w-[10px] h-[126px] bg-cyan-400 rounded-b transition-all duration-300 opacity-0 pointer-events-none z-30 shadow-md"></div>
+
+                                <!-- 4. Overflow Catch Beaker (Located strictly BESIDE Main Beaker at Left = 250px, Width = 120px) -->
+                                <!-- Gap of 20px between Main Beaker (ends 230px) and Catch Beaker (starts 250px) -> ZERO OVERLAP! -->
+                                <div class="absolute bottom-8 left-[250px] w-[120px] h-[140px] border-x-3 border-b-3 border-slate-300/90 rounded-b-xl bg-slate-950/80 overflow-visible flex flex-col justify-end shadow-xl z-10">
+                                    <div class="absolute top-0 left-0 right-0 h-1 bg-slate-300/90 rounded-t"></div>
+                                    <span class="absolute -top-5 left-0 right-0 text-center text-[8px] font-mono text-cyan-300 font-semibold bg-slate-900/90 border border-slate-700 rounded py-0.5 whitespace-nowrap">Gelas Penampung Air Pindahan</span>
+
+                                    <!-- Volume Scale Ticks on Beaker Glass Wall -->
+                                    <div class="absolute left-1 top-2 bottom-2 flex flex-col justify-between text-[7px] font-mono text-slate-400 z-20 pointer-events-none select-none">
+                                        <span>4.0L -</span>
+                                        <span>3.0L -</span>
+                                        <span>2.0L -</span>
+                                        <span>1.0L -</span>
+                                    </div>
+
+                                    <!-- Liquid Level in Catch Beaker (Vivid Blue with Wave surface) -->
+                                    <div id="catchFluidLevel" class="w-full fluid-element absolute bottom-0 left-0 border-t-2 border-cyan-200 water-surface-glow z-10" style="height: 40%; background: linear-gradient(180deg, rgba(56, 189, 248, 0.9) 0%, rgba(2, 132, 199, 0.95) 100%);">
+                                        <div class="w-full h-0.5 bg-white/70"></div>
+                                    </div>
+
+                                    <!-- Text Readout Badge Placed Cleanly Below the Beaker (No Water Obstruction) -->
+                                    <div class="absolute -bottom-9 left-0 right-0 text-center p-1 bg-slate-900/95 border border-slate-700 rounded shadow-lg z-30">
+                                        <span class="block text-[8px] text-slate-300 font-bold leading-tight">V<sub>pindah</sub> = V<sub>celup</sub></span>
+                                        <span id="catchVolReadout" class="text-[10px] font-bold text-cyan-300 font-mono">2.0 L</span>
+                                    </div>
+                                </div>
+
+                                <!-- Status Badge Floating/Submerged -->
+                                <div id="simStatusBadge" class="absolute top-2 right-2 bg-teal-600 text-white text-[10px] px-2.5 py-1 rounded-full font-bold shadow-lg z-30">
+                                    MELAYANG
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Stat Cards Display -->
+                        <div class="mt-3 bg-slate-900 border border-cyan-500/40 p-3 rounded-xl w-full max-w-lg grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-slate-950 p-2 rounded border border-slate-800">
+                                <span class="block text-[9px] text-slate-400 uppercase font-semibold">Berat Udara (W)</span>
+                                <span id="simDisplayW" class="text-xs sm:text-sm font-bold text-emerald-400">19.60 N</span>
+                            </div>
+                            <div class="bg-slate-950 p-2 rounded border border-slate-800">
+                                <span class="block text-[9px] text-slate-400 uppercase font-semibold">Gaya Apung (F<sub>a</sub>)</span>
+                                <span id="simDisplayFa" class="text-xs sm:text-sm font-bold text-cyan-300">19.60 N</span>
+                            </div>
+                            <div class="bg-slate-950 p-2 rounded border border-slate-800">
+                                <span class="block text-[9px] text-slate-400 uppercase font-semibold">Berat Semu (W<sub>semu</sub>)</span>
+                                <span id="simDisplayWsemu" class="text-xs sm:text-sm font-bold text-amber-300">0.00 N</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PRINT ONLY info for simulator -->
+            <div class="hidden print:block bg-gray-100 p-3 rounded text-xs text-slate-600 italic border border-gray-300">
+                Data percobaan diperoleh menggunakan Simulator Virtual Lab Hukum Archimedes (F<sub>a</sub> = &rho;<sub>f</sub> &middot; g &middot; V<sub>celup</sub>).
+            </div>
+
+            <!-- SECTION 4: Kegiatan 1 - Percobaan Gaya Apung Terhadap Volume Tercelup -->
+            <section class="space-y-4">
+                <div class="border-l-4 border-teal-600 pl-3">
+                    <h3 class="font-bold text-lg text-slate-800">Kegiatan 1: Hubungan Volume Benda Tercelup (V<sub>celup</sub>) Terhadap Gaya Apung (F<sub>a</sub>)</h3>
+                    <p class="text-xs text-slate-600">Fluida: Air Murni (&rho;<sub>f</sub> = 1000 kg/m³, g = 9.8 m/s²). Hitunglah nilai gaya apung teori dan bandingkan dengan input Anda.</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-slate-700 border-collapse border border-slate-300 rounded-lg overflow-hidden">
+                        <thead class="text-xs text-slate-800 uppercase bg-teal-100/80 border-b border-slate-300">
+                            <tr>
+                                <th class="p-3 text-center border-r border-slate-300 w-12">No</th>
+                                <th class="p-3 border-r border-slate-300">Volume Tercelup V<sub>celup</sub> (m³)</th>
+                                <th class="p-3 border-r border-slate-300">Massa Jenis Air &rho;<sub>f</sub> (kg/m³)</th>
+                                <th class="p-3 border-r border-slate-300">Massa Air Pindah m<sub>f</sub> (kg)</th>
+                                <th class="p-3 border-r border-slate-300">Berat Air Pindah W<sub>f</sub> (N)</th>
+                                <th class="p-3 border-r border-slate-300">Hitung F<sub>a</sub> Teoritis (N)</th>
+                                <th class="p-3 text-center">Cek Jawaban</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-kegiatan-1" class="divide-y divide-slate-200 bg-white">
+                            <!-- Rows generated dynamically by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-between items-center text-xs text-slate-500 no-print">
+                    <button onclick="addRowKegiatan1()" class="text-teal-700 hover:text-teal-900 font-semibold flex items-center gap-1 cursor-pointer">
+                        <i class="fa-solid fa-plus"></i> Tambah Baris Data
+                    </button>
+                    <span>*Rumus: F<sub>a</sub> = &rho;<sub>f</sub> &middot; g &middot; V<sub>celup</sub></span>
+                </div>
+            </section>
+
+            <!-- SECTION 5: Kegiatan 2 - Analisis Keadaan Benda (Terapung, Melayang, Tenggelam) -->
+            <section class="space-y-4">
+                <div class="border-l-4 border-cyan-600 pl-3">
+                    <h3 class="font-bold text-lg text-slate-800">Kegiatan 2: Menentukan Keadaan Benda Berdasarkan Perbandingan Massa Jenis</h3>
+                    <p class="text-xs text-slate-600">Bandingkan nilai massa jenis benda (&rho;<sub>b</sub>) dengan massa jenis fluida (&rho;<sub>f</sub>) untuk memprediksi posisi benda.</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-slate-700 border-collapse border border-slate-300 rounded-lg overflow-hidden">
+                        <thead class="text-xs text-slate-800 uppercase bg-cyan-100/80 border-b border-slate-300">
+                            <tr>
+                                <th class="p-3 text-center border-r border-slate-300 w-12">No</th>
+                                <th class="p-3 border-r border-slate-300">Massa Benda m (kg)</th>
+                                <th class="p-3 border-r border-slate-300">Volume Benda V (m³)</th>
+                                <th class="p-3 border-r border-slate-300">Massa Jenis Benda &rho;<sub>b</sub> (kg/m³)</th>
+                                <th class="p-3 border-r border-slate-300">Massa Jenis Fluida &rho;<sub>f</sub> (kg/m³)</th>
+                                <th class="p-3 border-r border-slate-300">Prediksi Keadaan Benda</th>
+                                <th class="p-3 text-center">Status Validasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-kegiatan-2" class="divide-y divide-slate-200 bg-white">
+                            <!-- Rows generated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECTION 6: Grafik Interaktif (Chart.js) -->
+            <section class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4 print-card">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-200 pb-3">
+                    <div>
+                        <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-teal-600"></i> Grafik Hubungan Volume Tercelup (V<sub>celup</sub>) vs Gaya Apung (F<sub>a</sub>)
+                        </h3>
+                        <p class="text-xs text-slate-500">Klik tombol untuk memperbarui grafik berdasarkan data Kegiatan 1.</p>
+                    </div>
+                    <button onclick="updateArchimedesChart()" class="no-print bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-rotate"></i> Update Grafik
+                    </button>
+                </div>
+
+                <div class="relative w-full h-[300px] flex items-center justify-center bg-slate-50 rounded-lg p-2">
+                    <canvas id="archimedesChart"></canvas>
+                </div>
+            </section>
+
+            <!-- SECTION 7: Analisis Data & Pertanyaan Diskusi -->
+            <section class="space-y-5">
+                <div class="border-l-4 border-amber-500 pl-3">
+                    <h3 class="font-bold text-lg text-slate-800">Analisis Data & Pertanyaan Diskusi</h3>
+                    <p class="text-xs text-slate-600">Jawablah pertanyaan analisis berikut berdasarkan hasil percobaan simulasi.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Pertanyaan 1 -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 print-card">
+                        <label class="block font-semibold text-sm text-slate-800 mb-2">
+                            1. Mengapa berat benda yang terukur pada neraca pegas saat berada di dalam air (W<sub>semu</sub>) terasa lebih ringan dibandingkan saat di udara (W)? Jelaskan hubungan antara W, W<sub>semu</sub>, dan F<sub>a</sub>!
+                        </label>
+                        <textarea rows="3" placeholder="Tuliskan analisis kelompok Anda di sini..." class="w-full p-3 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none leading-relaxed"></textarea>
+                    </div>
+
+                    <!-- Pertanyaan 2 -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 print-card">
+                        <label class="block font-semibold text-sm text-slate-800 mb-2">
+                            2. Bagaimana syarat kondisi massa jenis benda (&rho;<sub>b</sub>) dan massa jenis zat cair (&rho;<sub>f</sub>) agar benda dapat: (a) Terapung, (b) Melayang, dan (c) Tenggelam?
+                        </label>
+                        <textarea rows="3" placeholder="Tuliskan syarat-syaratnya di sini..." class="w-full p-3 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none leading-relaxed"></textarea>
+                    </div>
+
+                    <!-- Pertanyaan 3 - Soal Studi Kasus Hitungan -->
+                    <div class="bg-amber-50/60 p-4 rounded-xl border border-amber-200 print-card">
+                        <label class="block font-semibold text-sm text-amber-950 mb-2">
+                            3. <span class="bg-amber-200 text-amber-900 px-2 py-0.5 rounded text-xs font-bold">Studi Kasus Hitungan</span> Sebuah kubus besi dengan volume V = 0,005 m³ dan massa m = 39,5 kg dicelupkan seluruhnya ke dalam air murni (&rho;<sub>f</sub> = 1000 kg/m³, g = 9,8 m/s²). Berapakah berat semu kubus besi tersebut di dalam air?
+                        </label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Langkah Penyelesaian / Rumus:</label>
+                                <textarea rows="3" placeholder="Diketahui: V = 0.005 m³, m = 39.5 kg, rho = 1000 kg/m³&#10;W_udara = m × g = 39.5 × 9.8 = 387.1 N&#10;Fa = rho × g × V = 1000 × 9.8 × 0.005 = 49 N&#10;W_semu = W_udara - Fa = ..." class="w-full p-2.5 bg-white border border-amber-300 rounded-lg text-sm outline-none"></textarea>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-amber-200 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-xs font-semibold text-slate-500 uppercase">Input Hasil Akhir Berat Semu (Newton):</span>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <input type="number" id="calcAnswerArchimedes" step="0.1" placeholder="Misal: 338.1" class="w-full p-2 border border-slate-300 rounded text-sm outline-none font-bold text-slate-800">
+                                        <span class="text-sm font-bold text-slate-600">N</span>
+                                    </div>
+                                </div>
+                                <button onclick="checkAnswerArchimedes()" class="no-print mt-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs py-2 px-3 rounded transition-all cursor-pointer">
+                                    Cek Jawaban Kelompok
+                                </button>
+                                <div id="calcResultArchimedes" class="text-xs font-semibold mt-1 hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 8: Kesimpulan Praktikum -->
+            <section class="bg-gradient-to-r from-teal-50 to-cyan-50 p-5 rounded-xl border border-teal-200 print-card">
+                <div class="flex items-center gap-2 mb-3 text-teal-900 font-bold text-lg">
+                    <i class="fa-solid fa-clipboard-check text-teal-600"></i>
+                    <h3>KESIMPULAN KELOMPOK</h3>
+                </div>
+                <p class="text-xs text-slate-600 mb-3">Tuliskan kesimpulan utama praktikum mengenai besarnya gaya apung, berat zat cair yang dipindahkan, serta faktor-faktor yang mempengaruhi keberadaan benda di dalam fluida.</p>
+
+                <textarea rows="4" placeholder="Tuliskan poin-poin kesimpulan di sini..." class="w-full p-3.5 bg-white border border-teal-200 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none leading-relaxed"></textarea>
+            </section>
+
+            <!-- SECTION 9: Penerapan Hukum Archimedes Dalam Kehidupan Sehari-hari -->
+            <section class="space-y-4">
+                <div class="border-l-4 border-emerald-600 pl-3">
+                    <h3 class="font-bold text-lg text-slate-800">Penerapan Hukum Archimedes Dalam Kehidupan Sehari-hari</h3>
+                    <p class="text-xs text-slate-600">Berbagai teknologi modern yang memanfaatkan gaya apung zat cair dan gas.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Aplikasi 1 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between print-card">
+                        <div>
+                            <div class="w-10 h-10 rounded-lg bg-cyan-100 text-cyan-700 flex items-center justify-center font-bold text-lg mb-3">
+                                <i class="fa-solid fa-ship"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">Kapal Laut & Kapal Selam</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Kapal memiliki rongga udara besar sehingga volume totalnya sangat besar, membuat massa jenis totalnya lebih kecil dari air laut. Kapal selam mengisi tangki ballast dengan air/udara untuk menyelam atau terapung.
+                            </p>
+                        </div>
+                        <div class="mt-3 pt-2 border-t border-slate-100 text-[11px] font-semibold text-cyan-700">
+                            Pengaturan Tangki Ballast & V<sub>celup</sub>
+                        </div>
+                    </div>
+
+                    <!-- Aplikasi 2 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between print-card">
+                        <div>
+                            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg mb-3">
+                                <i class="fa-solid fa-hot-air-balloon"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">Balon Udara Panas</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Udara di dalam balon dipanaskan agar memuai dan massa jenisnya menjadi lebih ringan dibandingkan udara dingin di sekitarnya, memicu gaya ke atas Archimedes pada fluida gas.
+                            </p>
+                        </div>
+                        <div class="mt-3 pt-2 border-t border-slate-100 text-[11px] font-semibold text-amber-700">
+                            Fluida Gas & Perubahan &rho;<sub>udara</sub>
+                        </div>
+                    </div>
+
+                    <!-- Aplikasi 3 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between print-card">
+                        <div>
+                            <div class="w-10 h-10 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-lg mb-3">
+                                <i class="fa-solid fa-vial-circle-check"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1">Hidrometer</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Alat ukur massa jenis zat cair. Semakin kecil massa jenis zat cair, semakin dalam hidrometer tenggelam, sehingga skala pada tangkainya menunjukkan nilai &rho;<sub>f</sub>.
+                            </p>
+                        </div>
+                        <div class="mt-3 pt-2 border-t border-slate-100 text-[11px] font-semibold text-teal-700">
+                            Pengukuran Langsung &rho;<sub>zat cair</sub>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-slate-100 border-t border-slate-200 p-4 text-center text-xs text-slate-500">
+            LKPD Interaktif Hukum Archimedes &copy; 2026 - Media Pembelajaran Fisika / IPA Interaktif
+        </footer>
+    </div>
+
+    <!-- JAVASCRIPT CODE -->
+    <script>
+        let archimedesChartInstance = null;
+
+        // Dataset for Kegiatan 1 (Volume vs Gaya Apung)
+        let kegiatan1Data = [
+            { id: 1, vCelup: 0.001, rhoF: 1000, mf: 1.0, wf: 9.8 },
+            { id: 2, vCelup: 0.002, rhoF: 1000, mf: 2.0, wf: 19.6 },
+            { id: 3, vCelup: 0.003, rhoF: 1000, mf: 3.0, wf: 29.4 },
+            { id: 4, vCelup: 0.004, rhoF: 1000, mf: 4.0, wf: 39.2 }
+        ];
+
+        // Dataset for Kegiatan 2 (Density Comparison)
+        let kegiatan2Data = [
+            { id: 1, m: 1.5, v: 0.002, rhoF: 1000, correctState: 'terapung' },
+            { id: 2, m: 2.0, v: 0.002, rhoF: 1000, correctState: 'melayang' },
+            { id: 3, m: 3.0, v: 0.002, rhoF: 1000, correctState: 'tenggelam' },
+            { id: 4, m: 2.0, v: 0.002, rhoF: 800,  correctState: 'tenggelam' }
+        ];
+
+        /**
+         * Real-time Archimedes Virtual Lab Simulator Logic
+         */
+        function updateArchimedesSim() {
+            const rhoFSelect = document.getElementById('simFluidSelect');
+            if (!rhoFSelect) return;
+
+            const rhoF = parseFloat(rhoFSelect.value) || 1000;
+            const selectedOption = rhoFSelect.options[rhoFSelect.selectedIndex];
+            const fluidColor = selectedOption ? selectedOption.getAttribute('data-color') : 'rgba(14, 165, 233, 0.85)';
+
+            const mBenda = parseFloat(document.getElementById('simMass').value) || 2.0;
+            const vBenda = parseFloat(document.getElementById('simVol').value) || 0.002;
+            const g = 9.8;
+
+            // Density of object
+            const rhoBenda = mBenda / vBenda;
+
+            // Gravity weight of object in air
+            const W_udara = mBenda * g;
+
+            // Calculate submerged fraction
+            let submergedFraction = 1.0;
+            let statusText = 'MELAYANG';
+            let statusBg = 'bg-teal-600';
+
+            if (rhoBenda < rhoF) {
+                // Terapung: submerged fraction equals rhoBenda / rhoF
+                submergedFraction = rhoBenda / rhoF;
+                statusText = 'TERAPUNG';
+                statusBg = 'bg-amber-500';
+            } else if (Math.abs(rhoBenda - rhoF) < 1) {
+                // Melayang
+                submergedFraction = 1.0;
+                statusText = 'MELAYANG';
+                statusBg = 'bg-teal-600';
+            } else {
+                // Tenggelam
+                submergedFraction = 1.0;
+                statusText = 'TENGGELAM';
+                statusBg = 'bg-rose-600';
+            }
+
+            // Submerged volume V_celup
+            const vCelup = vBenda * submergedFraction;
+
+            // Buoyant Force Fa
+            const Fa = rhoF * g * vCelup;
+
+            // Apparent weight W_semu
+            const W_semu = Math.max(0, W_udara - Fa);
+
+            // Update UI Labels
+            document.getElementById('simMassVal').innerText = mBenda.toFixed(2) + ' kg';
+            document.getElementById('simVolVal').innerText = vBenda.toFixed(4) + ' m³ (' + (vBenda * 1000).toFixed(1) + ' L)';
+            document.getElementById('simDensityBenda').innerText = Math.round(rhoBenda) + ' kg/m³';
+
+            document.getElementById('simDisplayW').innerText = W_udara.toFixed(2) + ' N';
+            document.getElementById('simDisplayFa').innerText = Fa.toFixed(2) + ' N';
+            document.getElementById('simDisplayWsemu').innerText = W_semu.toFixed(2) + ' N';
+            document.getElementById('scaleWeightRead').innerText = 'W = ' + W_semu.toFixed(1) + ' N';
+
+            // Fluid UI Color & Level
+            const fluidLevelElem = document.getElementById('fluidLevel');
+            if (fluidLevelElem) {
+                fluidLevelElem.style.background = `linear-gradient(180deg, ${fluidColor} 0%, rgba(2, 132, 199, 0.95) 100%)`;
+                fluidLevelElem.style.height = '80%'; // Base height reaches spout lower orifice
+            }
+
+            const catchFluidLevelElem = document.getElementById('catchFluidLevel');
+            if (catchFluidLevelElem) {
+                catchFluidLevelElem.style.background = `linear-gradient(180deg, ${fluidColor} 0%, rgba(2, 132, 199, 0.95) 100%)`;
+            }
+
+            // Displaced Water Volume in Catch Beaker
+            const catchVolLitres = (vCelup * 1000).toFixed(1);
+            document.getElementById('catchVolReadout').innerText = catchVolLitres + ' L';
+            
+            // Catch fluid height scales with displaced volume (0.5L to 4.0L mapped to 15% - 85%)
+            const catchHeightPct = Math.min(85, Math.max(12, (vCelup / 0.004) * 70 + 12));
+            if (catchFluidLevelElem) {
+                catchFluidLevelElem.style.height = catchHeightPct + '%';
+            }
+
+            // Spout Water Stream animation toggle (visible whenever object is submerged)
+            const spoutStream = document.getElementById('spoutWaterStream');
+            if (spoutStream) {
+                if (vCelup > 0) {
+                    spoutStream.style.opacity = '1';
+                } else {
+                    spoutStream.style.opacity = '0';
+                }
+            }
+
+            // Visual Block Position inside beaker
+            const blockElem = document.getElementById('submergedBlock');
+            const statusBadge = document.getElementById('simStatusBadge');
+            document.getElementById('blockVolText').innerText = (vBenda * 1000).toFixed(1) + ' L';
+
+            if (statusBadge) {
+                statusBadge.innerText = statusText;
+                statusBadge.className = `absolute top-2 right-2 text-white text-[10px] px-2.5 py-1 rounded-full font-bold shadow-lg z-30 ${statusBg}`;
+            }
+
+            let blockBottomPx = 70; // Position from beaker bottom in px
+            if (statusText === 'TERAPUNG') {
+                // Partially submerged: block sits near water surface line
+                blockBottomPx = 110 + (1 - submergedFraction) * 45;
+            } else if (statusText === 'MELAYANG') {
+                // Completely submerged in middle water level
+                blockBottomPx = 65;
+            } else {
+                // Tenggelam: rests near beaker bottom
+                blockBottomPx = 18;
+            }
+            if (blockElem) {
+                blockElem.style.bottom = blockBottomPx + 'px';
+            }
+
+            // Vector Arrow UI Updates
+            const vectorFa = document.getElementById('vectorFa');
+            const vectorW = document.getElementById('vectorW');
+            if (vectorFa) vectorFa.querySelector('span').innerHTML = 'F<sub>a</sub> = ' + Fa.toFixed(1) + 'N';
+            if (vectorW) vectorW.querySelector('span').innerHTML = 'W = ' + W_udara.toFixed(1) + 'N';
+
+            // Dynamic Needle Position on Spring Scale (W_semu max 50N mapping)
+            const needleTopPct = Math.min(90, Math.max(10, (W_semu / 50) * 80 + 10));
+            const springNeedle = document.getElementById('springNeedle');
+            if (springNeedle) springNeedle.style.top = needleTopPct + '%';
+
+            // Dynamic SVG Coil Spring Path stretching according to W_semu
+            const springCoilPath = document.getElementById('springCoilPath');
+            if (springCoilPath) {
+                const stretchY = 30 + (W_semu / 50) * 50;
+                const newPath = `M 20,0 L 20,5 L 10,${10 + stretchY*0.1} L 30,${10 + stretchY*0.25} L 10,${10 + stretchY*0.4} L 30,${10 + stretchY*0.55} L 10,${10 + stretchY*0.7} L 30,${10 + stretchY*0.85} L 20,${10 + stretchY} L 20,95`;
+                springCoilPath.setAttribute('d', newPath);
+            }
+
+            // Update SVG Wire Position precisely along centered X=130px vertical axis
+            updateConnectingWire(blockBottomPx);
+        }
+
+        /**
+         * Update SVG Wire coordinates precisely on X=130px axis
+         */
+        function updateConnectingWire(blockBottomPx) {
+            const wire = document.getElementById('springWire');
+            if (!wire) return;
+
+            // Scale bottom hook Y = 134px
+            const y1 = 134;
+
+            // Main beaker height = 230px, bottom Y inside stage = 410 - 16 = 394px
+            // Block top hook Y = 394 - blockBottomPx - 68 (block height) - 10 (hook height)
+            const y2 = Math.max(y1 + 5, 394 - blockBottomPx - 78);
+
+            // X coordinates locked strictly at 130px center vertical axis
+            wire.setAttribute('x1', 130);
+            wire.setAttribute('y1', y1);
+            wire.setAttribute('x2', 130);
+            wire.setAttribute('y2', y2);
+        }
+
+        /**
+         * Render Activity 1 Table (Volume Tercelup vs Fa)
+         */
+        function renderKegiatan1Table() {
+            const tbody = document.getElementById('table-kegiatan-1');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            kegiatan1Data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-bold text-slate-500 border-r border-slate-200">${index + 1}</td>
+                    <td class="p-3 border-r border-slate-200 font-semibold text-teal-700">${row.vCelup} m³</td>
+                    <td class="p-3 border-r border-slate-200">${row.rhoF} kg/m³</td>
+                    <td class="p-3 border-r border-slate-200 text-slate-600">${row.mf} kg</td>
+                    <td class="p-3 border-r border-slate-200 font-bold text-cyan-600">${row.wf} N</td>
+                    <td class="p-3 border-r border-slate-200">
+                        <input type="number" id="k1_input_${row.id}" step="0.1" placeholder="Hitung Fa..." class="w-28 p-1.5 border border-slate-300 rounded text-xs font-semibold focus:ring-1 focus:ring-teal-500 outline-none">
+                    </td>
+                    <td class="p-3 text-center">
+                        <button onclick="checkKegiatan1Row(${row.id}, ${row.vCelup}, ${row.rhoF})" class="no-print bg-teal-100 hover:bg-teal-200 text-teal-800 text-xs px-2.5 py-1 rounded font-semibold transition-all cursor-pointer">
+                            Cek
+                        </button>
+                        <span id="k1_status_${row.id}" class="text-xs font-bold ml-1"></span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function checkKegiatan1Row(id, vCelup, rhoF) {
+            const userVal = parseFloat(document.getElementById(`k1_input_${id}`).value);
+            const statusElem = document.getElementById(`k1_status_${id}`);
+            const expectedFa = rhoF * 9.8 * vCelup;
+
+            if (isNaN(userVal)) {
+                statusElem.innerText = '❓ Isikan angka!';
+                statusElem.className = 'text-amber-600 text-xs font-bold ml-1';
+                return;
+            }
+
+            if (Math.abs(userVal - expectedFa) < 0.2) {
+                statusElem.innerText = '✅ Benar!';
+                statusElem.className = 'text-emerald-600 text-xs font-bold ml-1';
+            } else {
+                statusElem.innerText = `❌ Harusnya ${expectedFa.toFixed(1)} N`;
+                statusElem.className = 'text-rose-600 text-xs font-bold ml-1';
+            }
+        }
+
+        function addRowKegiatan1() {
+            const nextId = kegiatan1Data.length + 1;
+            const newVol = parseFloat((0.001 * nextId).toFixed(3));
+            const rhoF = 1000;
+            const mf = newVol * rhoF;
+            const wf = mf * 9.8;
+
+            kegiatan1Data.push({
+                id: nextId,
+                vCelup: newVol,
+                rhoF: rhoF,
+                mf: parseFloat(mf.toFixed(1)),
+                wf: parseFloat(wf.toFixed(1))
+            });
+
+            renderKegiatan1Table();
+        }
+
+        /**
+         * Render Activity 2 Table (Floating, Suspended, Sinking predictions)
+         */
+        function renderKegiatan2Table() {
+            const tbody = document.getElementById('table-kegiatan-2');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            kegiatan2Data.forEach((row, index) => {
+                const rhoBenda = Math.round(row.m / row.v);
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-bold text-slate-500 border-r border-slate-200">${index + 1}</td>
+                    <td class="p-3 border-r border-slate-200">${row.m} kg</td>
+                    <td class="p-3 border-r border-slate-200">${row.v} m³</td>
+                    <td class="p-3 border-r border-slate-200 font-bold text-amber-700">${rhoBenda} kg/m³</td>
+                    <td class="p-3 border-r border-slate-200 font-bold text-cyan-700">${row.rhoF} kg/m³</td>
+                    <td class="p-3 border-r border-slate-200">
+                        <select id="k2_select_${row.id}" class="p-1 border border-slate-300 rounded text-xs font-semibold focus:outline-none">
+                            <option value="">-- Pilih --</option>
+                            <option value="terapung">Terapung</option>
+                            <option value="melayang">Melayang</option>
+                            <option value="tenggelam">Tenggelam</option>
+                        </select>
+                    </td>
+                    <td class="p-3 text-center">
+                        <button onclick="checkKegiatan2Row(${row.id}, '${row.correctState}')" class="no-print bg-cyan-100 hover:bg-cyan-200 text-cyan-800 text-xs px-2.5 py-1 rounded font-semibold transition-all cursor-pointer">
+                            Validasi
+                        </button>
+                        <span id="k2_status_${row.id}" class="text-xs font-bold ml-1"></span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function checkKegiatan2Row(id, correctState) {
+            const userChoice = document.getElementById(`k2_select_${id}`).value;
+            const statusElem = document.getElementById(`k2_status_${id}`);
+
+            if (!userChoice) {
+                statusElem.innerText = '❓ Pilih dulu!';
+                statusElem.className = 'text-amber-600 text-xs font-bold ml-1';
+                return;
+            }
+
+            if (userChoice === correctState) {
+                statusElem.innerText = '✅ Sesuai!';
+                statusElem.className = 'text-emerald-600 text-xs font-bold ml-1';
+            } else {
+                statusElem.innerText = `❌ Harusnya ${correctState.toUpperCase()}`;
+                statusElem.className = 'text-rose-600 text-xs font-bold ml-1';
+            }
+        }
+
+        /**
+         * Initialize Chart.js graph
+         */
+        function initArchimedesChart() {
+            const canvasElem = document.getElementById('archimedesChart');
+            if (!canvasElem) return;
+
+            const ctx = canvasElem.getContext('2d');
+
+            const labels = kegiatan1Data.map(d => `${(d.vCelup * 1000).toFixed(1)} L (${d.vCelup} m³)`);
+            const dataFa = kegiatan1Data.map(d => d.rhoF * 9.8 * d.vCelup);
+
+            archimedesChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Gaya Apung Fa (N) vs Volume Tercelup V',
+                        data: dataFa,
+                        borderColor: '#0d9488',
+                        backgroundColor: 'rgba(13, 148, 136, 0.15)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#0284c7',
+                        pointRadius: 6,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Volume Benda Tercelup (V_celup)',
+                                font: { weight: 'bold' }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Gaya Apung F_a (Newton)',
+                                font: { weight: 'bold' }
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateArchimedesChart() {
+            if (!archimedesChartInstance) return;
+
+            const labels = kegiatan1Data.map(d => `${(d.vCelup * 1000).toFixed(1)} L (${d.vCelup} m³)`);
+            const dataFa = kegiatan1Data.map(d => d.rhoF * 9.8 * d.vCelup);
+
+            archimedesChartInstance.data.labels = labels;
+            archimedesChartInstance.data.datasets[0].data = dataFa;
+            archimedesChartInstance.update();
+        }
+
+        /**
+         * Case Study Answer Check
+         */
+        function checkAnswerArchimedes() {
+            const userAns = parseFloat(document.getElementById('calcAnswerArchimedes').value);
+            const resultDiv = document.getElementById('calcResultArchimedes');
+            resultDiv.classList.remove('hidden');
+
+            const expected = 338.1;
+
+            if (isNaN(userAns)) {
+                resultDiv.innerText = '⚠ Silakan masukkan hasil perhitungan kelompok Anda.';
+                resultDiv.className = 'text-xs font-semibold mt-1 text-amber-700';
+            } else if (Math.abs(userAns - expected) < 0.5) {
+                resultDiv.innerText = '🎉 Luar biasa! Jawaban Anda BENAR (W_semu = 338,1 N). Kubus besi mengalami gaya apung 49 N!';
+                resultDiv.className = 'text-xs font-bold mt-1 text-emerald-700';
+            } else {
+                resultDiv.innerText = `❌ Jawaban belum tepat. Hint: Hitung W_udara = m × g (387,1 N), Fa = 49 N, lalu selisihkan.`;
+                resultDiv.className = 'text-xs font-bold mt-1 text-rose-700';
+            }
+        }
+
+        /**
+         * Export to PDF Function
+         */
+        function downloadPDF() {
+            const element = document.getElementById('lkpd-document');
+            
+            element.classList.add('pdf-export-mode');
+
+            const opt = {
+                margin:       [0.3, 0.3, 0.3, 0.3],
+                filename:     'LKPD_Interaktif_Hukum_Archimedes.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.classList.remove('pdf-export-mode');
+            });
+        }
+
+        // On Page Load Initialization
+        window.onload = function() {
+            const fluidSelect = document.getElementById('simFluidSelect');
+            const massInput = document.getElementById('simMass');
+            const volInput = document.getElementById('simVol');
+
+            if (fluidSelect) {
+                fluidSelect.addEventListener('change', updateArchimedesSim);
+            }
+            if (massInput) {
+                massInput.addEventListener('input', updateArchimedesSim);
+            }
+            if (volInput) {
+                volInput.addEventListener('input', updateArchimedesSim);
+            }
+
+            updateArchimedesSim();
+            renderKegiatan1Table();
+            renderKegiatan2Table();
+            initArchimedesChart();
+            
+            // Set default date input to current date
+            const today = new Date().toISOString().split('T')[0];
+            const dateElem = document.getElementById('tanggal');
+            if (dateElem) dateElem.value = today;
+        };
+    </script>
+</body>
+</html>
